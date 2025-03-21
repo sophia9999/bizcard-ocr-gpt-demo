@@ -92,6 +92,8 @@ To make the structure reusable and shareable, I rebuilt the core logic using moc
 
 ## 🚀 API Endpoints
 
+You can see at http://localhost:port/docs
+
 ### POST `/api/process_ocr`
 
 - **Description**: Processes a business card image URL, extracts the text, and returns the classified data.
