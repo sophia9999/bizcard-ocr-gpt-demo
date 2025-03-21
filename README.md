@@ -92,7 +92,7 @@ To make the structure reusable and shareable, I rebuilt the core logic using moc
 
 ## 🚀 API Endpoints
 
-You can see at http://localhost:port/docs
+After you start "python run_server.py", you can see at http://localhost:port/docs
 
 ### POST `/api/process_ocr`
 
