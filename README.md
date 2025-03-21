@@ -111,7 +111,8 @@ To make the structure reusable and shareable, I rebuilt the core logic using moc
         "name": ["John Doe"],
         "company": ["Example Inc."],
         "phone_numbers": ["010-1234-5678"],
-        ... # It depends on your prompt.
+            // It depends on your prompt.
+        }
         ]
     }
 
