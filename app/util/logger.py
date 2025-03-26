@@ -17,6 +17,11 @@ def setup_logger():
         datefmt="%Y-%m-%d %H:%M:%S"
     )
 
+    # 터미널 로그
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(log_level)
+
     # 애플리케이션 로그 설정 (uvicorn.error와 동일하게)
     app_logger = logging.getLogger("uvicorn.error")
     app_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=14, encoding="utf-8")
@@ -24,6 +29,7 @@ def setup_logger():
     app_handler.setLevel(log_level)
     app_logger.handlers.clear() # gunicorn 사용 시 기존핸들러에 추가되기 때문에, 초기화 후 넣어준다.
     app_logger.addHandler(app_handler)
+    app_logger.addHandler(console_handler)
     app_logger.setLevel(log_level)
 
     # 접근 로그 설정 (클라이언트 요청 기록)
@@ -33,6 +39,7 @@ def setup_logger():
     access_handler.setLevel(log_level)
     access_logger.handlers.clear()
     access_logger.addHandler(access_handler)
+    access_logger.addHandler(console_handler)
     access_logger.setLevel(log_level)
 
     return app_logger, access_logger

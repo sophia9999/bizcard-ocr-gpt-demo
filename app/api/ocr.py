@@ -11,6 +11,7 @@ router = APIRouter()
 @router.get("/ping", tags=["OCR"])
 async def ping():
     logger.info("📡 Received /ping request")
+    logger.debug("📡 Received /ping request")
     return JSONResponse(content={"message": "pong"})
 
 
