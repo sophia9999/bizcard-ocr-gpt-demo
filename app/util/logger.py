@@ -1,3 +1,6 @@
+# FastAPI 애플리케이션의 로깅을 다룹니다.
+# 이 파일에서는 uvicorn과 FastAPI의 로그만을 처리하고, 앱 로깅을 위한 인스턴스를 제공합니다.
+
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os

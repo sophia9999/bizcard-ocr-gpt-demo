@@ -17,6 +17,9 @@ access_log_file = f"{log_dir}/access.log"
 accesslog = None
 errorlog = None
 
+# Gunicorn 프로세스 레벨의 로깅을 다룹니다.
+# 여기서 설정하는 로그는 Gunicorn 프로세스 및 워커 관련 로그입니다.
+# FastAPI의 세부 로깅은 `logger.py`에서 관리합니다.
 def setup_logging():
     formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
