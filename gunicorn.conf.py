@@ -1,8 +1,9 @@
+import multiprocessing
 import logging
 from app.core.config import settings
 from logging.handlers import TimedRotatingFileHandler
 
-workers = 2
+workers = multiprocessing.cpu_count * 2 + 1
 bind = f"{settings.UVICORN_HOST}:{settings.UVICORN_PORT}"
 # gunicorn.conf.py
 loglevel= "debug" if settings.DEBUG else "info"
