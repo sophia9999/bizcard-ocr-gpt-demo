@@ -33,9 +33,9 @@ def setup_logging():
     access_handler.setLevel(log_level)
 
     # 콘솔
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    console_handler.setLevel(log_level)
+    # console_handler = logging.StreamHandler(sys.stdout)
+    # console_handler.setFormatter(formatter)
+    # console_handler.setLevel(log_level)
 
     # uvicorn.error 
     uvicorn_error_logger = logging.getLogger("uvicorn.error")
