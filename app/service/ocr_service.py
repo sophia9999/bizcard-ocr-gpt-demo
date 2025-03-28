@@ -2,27 +2,25 @@ from app.service.gpt_service import build_messages, call_openai, parse_gpt_respo
 from app.util.logger import logger
 from google.cloud import vision
 import cv2
-from io import BytesIO
-from PIL import Image
 import numpy as np
 
 # 전역 클라이언트 생성
 vision_client = vision.ImageAnnotatorClient()
 
 async def call_google_vision_api(extracted_cards: list[np.ndarray]) -> list[str]:
+    '''
+    return [extracted texts,...]
+    '''
     result_texts = []
 
     try:
-        logger.debug("Google Vision API로 명함 이미지들 전달 중...")
-
+        logger.debug(f"Google Vision API로 명함 이미지들 전달 중...")
+        
+        # 추출된 개수만큼의 카드별 array로 변환
         for idx, cv_image in enumerate(extracted_cards):
-            # OpenCV BGR → RGB → PIL.Image
-            pil_image = Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))
-
-            # PIL → byte array
-            buffer = BytesIO()
-            pil_image.save(buffer, format="JPEG")
-            content = buffer.getvalue()
+            # OpenCV -> jpeg byte encoding
+            _, buffer = cv2.imencode(".jpg", cv_image)
+            content = buffer.tobytes()
 
             vision_image = vision.Image(content=content)
             response = vision_client.text_detection(image=vision_image)

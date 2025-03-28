@@ -17,7 +17,7 @@ async def retrieve_image(image_url: str) -> Image.Image | None:
         logger.exception(f"이미지 다운로드 실패: {e}")
         return None
 
-async def divide_image_to_cards(image: Image.Image) -> list[Image.Image]:
+def divide_image_to_cards(image: Image.Image) -> list[Image.Image]:
     try:
         logger.debug("이미지에서 명함 추출 중...")
         # 이미지 이진화 -> 흑백전환, 블러, 오츠 이진화 -> 문서와 배경 구분

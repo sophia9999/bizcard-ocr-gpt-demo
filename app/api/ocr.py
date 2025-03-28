@@ -30,7 +30,7 @@ async def process_ocr(payload: OCRRequest):
         raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
 
     # 이미지 전처리
-    extracted_cards = await image_service.divide_image_to_cards(original_image)
+    extracted_cards = image_service.divide_image_to_cards(original_image)
     if not extracted_cards:
         raise HTTPException(status_code=500, detail="카드 추출 실패")
 
