@@ -35,15 +35,20 @@ class Settings(BaseSettings):
     # Google Cloud SDK는 OS환경변수로 os.environ에서 값을 찾으므로 os.environ에 등록해줘야합니다.
     GOOGLE_APPLICATION_CREDENTIALS: str = "your-google-key"
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE)
+    model_config = SettingsConfigDict(
+        env_file=ENV_FILE,
+        env_file_encoding="utf-8",
+        case_sensitive=True
+    )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        if not self.GOOGLE_APPLICATION_CREDENTIALS:
+            raise ValueError("GOOGLE_APPLICATION_CREDENTIALS is not set.")
+    
         if not self.LOG_DIR:
             self.LOG_DIR = tempfile.mkdtemp(prefix="demo_log")
-
-        print(f"✅ Running in `{self.ENV}` mode (DEBUG={self.DEBUG})")
 
 # 인스턴스화
 settings = Settings()
