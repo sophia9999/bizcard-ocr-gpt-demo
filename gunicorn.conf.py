@@ -5,7 +5,6 @@ from app.core.config import settings
 workers = multiprocessing.cpu_count() * 2 + 1
 bind = f"{settings.UVICORN_HOST}:{settings.UVICORN_PORT}"
 loglevel= "debug" if settings.DEBUG else "info"
-workers = 2
 worker_class = "uvicorn.workers.UvicornWorker"
 wsgi_app= "app.main:app"
 log_dir = settings.LOG_DIR
