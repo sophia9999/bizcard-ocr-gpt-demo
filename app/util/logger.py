@@ -1,50 +1,64 @@
-# FastAPI 애플리케이션의 로깅을 다룹니다.
-# 이 파일에서는 uvicorn과 FastAPI의 로그만을 처리하고, 앱 로깅을 위한 인스턴스를 제공합니다.
-
 import logging
-from logging.handlers import TimedRotatingFileHandler
 import os
+import sys
+from logging.handlers import TimedRotatingFileHandler
 from app.core.config import settings
+import multiprocessing
 
-# 로그 디렉토리 확인 및 생성
 log_dir = settings.LOG_DIR
 os.makedirs(log_dir, exist_ok=True)
 
-log_file = os.path.join(log_dir, "app.log")
-access_log_file = os.path.join(log_dir, "access.log")
+worker_pid = str(multiprocessing.current_process().pid)
+log_file = os.path.join(log_dir, f"app_{worker_pid}.log")
+access_log_file = os.path.join(log_dir, f"access_{worker_pid}.log")
 
-def setup_logger():
+def setup_logging():
     log_level = logging.DEBUG if settings.DEBUG else logging.INFO
+
+    # 포맷터 정의
     formatter = logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        "%(asctime)s [%(levelname)s] [%(module)s] [PID:%(process)d] : %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
 
-    # 터미널 로그
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
-    console_handler.setLevel(log_level)
+    # 루트 로거 초기화 (핸들러 중복 방지)
+    logging.getLogger().handlers.clear()
 
-    # 애플리케이션 로그 설정 (uvicorn.error와 동일하게)
-    app_logger = logging.getLogger("uvicorn.error")
-    app_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=14, encoding="utf-8")
-    app_handler.setFormatter(formatter)
-    app_handler.setLevel(log_level)
-    app_logger.handlers.clear() # gunicorn 사용 시 기존핸들러에 추가되기 때문에, 초기화 후 넣어준다.
-    app_logger.addHandler(app_handler)
-    app_logger.addHandler(console_handler)
-    app_logger.setLevel(log_level)
+    file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=14, encoding="utf-8")
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(log_level)
 
-    # 접근 로그 설정 (클라이언트 요청 기록)
-    access_logger = logging.getLogger("uvicorn.access")
     access_handler = TimedRotatingFileHandler(access_log_file, when="midnight", interval=1, backupCount=14, encoding="utf-8")
     access_handler.setFormatter(formatter)
     access_handler.setLevel(log_level)
-    access_logger.handlers.clear()
-    access_logger.addHandler(access_handler)
-    access_logger.addHandler(console_handler)
-    access_logger.setLevel(log_level)
 
-    return app_logger, access_logger
+    # 콘솔
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(log_level)
 
-logger, access_logger = setup_logger()
+    # uvicorn.error 
+    uvicorn_error_logger = logging.getLogger("uvicorn.error")
+    uvicorn_error_logger.addHandler(file_handler)
+    uvicorn_error_logger.setLevel(log_level)
+    uvicorn_error_logger.propagate = False
+
+    # uvicorn.access 로컬테스트 시 안봐도되는 로그이긴 합니다.
+    uvicorn_access_logger = logging.getLogger("uvicorn.access")
+    uvicorn_access_logger.addHandler(access_handler)
+    uvicorn_access_logger.setLevel(log_level)
+    uvicorn_access_logger.propagate = False
+
+    # gunicorn.error --> gunicorn으로 실행 시
+    if "gunicorn" in sys.argv[0]:
+        gunicorn_logger = logging.getLogger("gunicorn.error")
+        gunicorn_logger.addHandler(file_handler)
+        gunicorn_logger.setLevel(log_level)
+
+        gunicorn_logger = logging.getLogger("gunicorn.access")
+        gunicorn_logger.addHandler(access_handler)
+        gunicorn_logger.setLevel(log_level)
+
+    return uvicorn_error_logger, uvicorn_access_logger
+
+logger, uvicorn_access_logger = setup_logging()
