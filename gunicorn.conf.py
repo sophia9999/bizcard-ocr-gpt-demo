@@ -1,5 +1,4 @@
 import multiprocessing
-import logging
 from app.core.config import settings
 
 workers = multiprocessing.cpu_count() * 2 + 1
