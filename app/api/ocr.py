@@ -23,23 +23,28 @@ class OCRRequest(BaseModel):
 @router.post("/process_ocr", tags=["OCR"])
 async def process_ocr(payload: OCRRequest):
     logger.debug(f"Processing OCR for user: {payload.user_id}, image: {payload.image_url}")
+    try :
+        # 이미지 불러오기 (spec 상 url로 받은 1장의 이미지)
+        original_image = image_service.retrieve_image(payload.image_url)
+        if not original_image:
+            raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
 
-    # 이미지 불러오기
-    original_image = await image_service.retrieve_image(payload.image_url)
-    if not original_image:
-        raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
+        # 이미지 전처리
+        extracted_cards = image_service.divide_image_to_cards(original_image)
+        if not extracted_cards:
+            raise HTTPException(status_code=501, detail="카드 추출 실패")
 
-    # 이미지 전처리
-    extracted_cards = image_service.divide_image_to_cards(original_image)
-    if not extracted_cards:
-        raise HTTPException(status_code=500, detail="카드 추출 실패")
+        # google vision text 추출
+        extracted_text = ocr_service.call_google_vision_api(extracted_cards,)
+        if not extracted_text:
+            raise HTTPException(status_code=501, detail="텍스트 인식 실패")
 
-    # google vision text 추출
-    extracted_text = await ocr_service.call_google_vision_api(extracted_cards,)
-    if not extracted_text:
-        raise HTTPException(status_code=500, detail="텍스트 인식 실패")
+        # gpt로 분류하기
+        # 전체 OCR파이프라인 중에서, 비동기로 처리할 의미가 있는 것은 GPT호출 뿐
+        result = await ocr_service.classify_cards_with_gpt(extracted_text)
 
-    # gpt로 분류하기
-    result = await ocr_service.classify_cards_with_gpt(extracted_text)
+        return JSONResponse(content={"result": result})
 
-    return JSONResponse(content={"result": result})
+    except Exception as e:
+        logger.exception("/process_ocr fail...")
+        raise HTTPException(status_code=501, detail="process_ocr fail")
