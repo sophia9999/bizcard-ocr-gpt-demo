@@ -7,7 +7,7 @@ import numpy as np
 # 전역 클라이언트 생성
 vision_client = vision.ImageAnnotatorClient()
 
-async def call_google_vision_api(extracted_cards: list[np.ndarray]) -> list[str]:
+def call_google_vision_api(extracted_cards: list[np.ndarray]) -> list[str]:
     '''
     return [extracted texts,...]
     '''

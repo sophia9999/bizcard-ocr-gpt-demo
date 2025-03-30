@@ -5,7 +5,7 @@ from PIL import Image
 from io import BytesIO
 from app.util.logger import logger
 
-async def retrieve_image(image_url: str) -> Image.Image | None:
+def retrieve_image(image_url: str) -> Image.Image | None:
     try:
         logger.debug(f"이미지 다운로드 중: {image_url}")
         response = requests.get(image_url, timeout=5)

@@ -2,6 +2,7 @@ from openai import AsyncOpenAI
 import json
 from app.core.config import settings
 from app.util.logger import logger
+import time
 
 client_openai = AsyncOpenAI(
     api_key=settings.OPENAI_API_KEY
@@ -28,7 +29,8 @@ def build_messages(cards: list) -> list:
     return messages
 
 async def call_openai(messages: list) -> str:
-    logger.info("GPT 호출 중...")
+    logger.info("GPT 호출 시작")
+    start = time.monotonic()
 
     response = await client_openai.chat.completions.create(
         model="gpt-4o-mini",
@@ -39,6 +41,10 @@ async def call_openai(messages: list) -> str:
             "type": "json_object"
         }
     )
+
+    elapsed = time.monotonic() - start
+    logger.info(f"GPT 호출 완료 (소요 시간: {elapsed:.2f}초)")
+    
     return response.choices[0].message.content
 
 def parse_gpt_response(content: str, expected_len: int) -> list:
