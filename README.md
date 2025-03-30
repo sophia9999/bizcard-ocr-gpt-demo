@@ -82,7 +82,7 @@ To make the structure reusable and shareable, I rebuilt the core logic using moc
 
 5. Run the server:
     ```bash
-    python run_server.py
+    python ENV=dev run_server.py
     ```
 
 6. Test the endpoints using `pytest`:

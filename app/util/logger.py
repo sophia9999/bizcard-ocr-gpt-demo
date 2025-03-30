@@ -32,7 +32,7 @@ def setup_logging():
     access_handler.setFormatter(formatter)
     access_handler.setLevel(log_level)
 
-    # 콘솔
+    # 콘솔 - 개발 시에는 terminal에서 확인을 위해 주석해제하십시오.
     # console_handler = logging.StreamHandler(sys.stdout)
     # console_handler.setFormatter(formatter)
     # console_handler.setLevel(log_level)
@@ -43,7 +43,7 @@ def setup_logging():
     uvicorn_error_logger.setLevel(log_level)
     uvicorn_error_logger.propagate = False
 
-    # uvicorn.access 로컬테스트 시 안봐도되는 로그이긴 합니다.
+    # uvicorn.access 로컬테스트 시 안봐도되는 로그이긴 합니다. (운영에선 추적 시 필수임)
     uvicorn_access_logger = logging.getLogger("uvicorn.access")
     uvicorn_access_logger.addHandler(access_handler)
     uvicorn_access_logger.setLevel(log_level)
