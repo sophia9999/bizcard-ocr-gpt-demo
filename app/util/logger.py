@@ -12,6 +12,11 @@ worker_pid = str(multiprocessing.current_process().pid)
 log_file = os.path.join(log_dir, f"app_{worker_pid}.log")
 access_log_file = os.path.join(log_dir, f"access_{worker_pid}.log")
 
+# 로컬에서는 Pid별 파일생성하지 않도록 분기처리
+if settings.ENV.lower() == 'local' :
+    log_file = os.path.join(log_dir, f"app.log")
+    access_log_file = os.path.join(log_dir, f"access.log")
+    
 def setup_logging():
     log_level = logging.DEBUG if settings.DEBUG else logging.INFO
 
@@ -32,15 +37,11 @@ def setup_logging():
     access_handler.setFormatter(formatter)
     access_handler.setLevel(log_level)
 
-    # 콘솔 - 개발 시에는 terminal에서 확인을 위해 주석해제하십시오.
-    # console_handler = logging.StreamHandler(sys.stdout)
-    # console_handler.setFormatter(formatter)
-    # console_handler.setLevel(log_level)
-
     # uvicorn.error 
     uvicorn_error_logger = logging.getLogger("uvicorn.error")
     uvicorn_error_logger.addHandler(file_handler)
     uvicorn_error_logger.setLevel(log_level)
+    # gunicorn으로 실행 시에는 중복 방지 위함
     uvicorn_error_logger.propagate = False
 
     # uvicorn.access 로컬테스트 시 안봐도되는 로그이긴 합니다. (운영에선 추적 시 필수임)
@@ -48,6 +49,14 @@ def setup_logging():
     uvicorn_access_logger.addHandler(access_handler)
     uvicorn_access_logger.setLevel(log_level)
     uvicorn_access_logger.propagate = False
+
+    # 콘솔 - local 개발 시에는 terminal에서 확인을 위해 streamHandler
+    if settings.ENV.lower() == 'local' :
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        console_handler.setLevel(log_level)
+        # local 개발 시에는 uvicorn 로그 console에 propagate true해야한다.
+        uvicorn_error_logger.propagate = True 
 
     # gunicorn.error --> gunicorn으로 실행 시
     if "gunicorn" in sys.argv[0]:

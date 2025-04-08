@@ -33,7 +33,7 @@ async def call_openai(messages: list) -> str:
     start = time.monotonic()
 
     response = await client_openai.chat.completions.create(
-        model="gpt-4o-mini",
+        model=settings.GPT_MODEL,
         messages=messages,
         temperature=0.1,
         max_tokens=3000,
