@@ -74,10 +74,14 @@ To make the structure reusable and shareable, I rebuilt the core logic using moc
     pip install -r requirements.txt
     ```
 
-4. Set up the `.env` file with your API keys and credentials:
+4. Set up the `.env` file with your API keys and credentials and other settings. you can refer .env.example files to fill out:
     ```env
     GOOGLE_APPLICATION_CREDENTIALS=path/to/your/google-vision-key.json
     OPENAI_API_KEY=your-openai-api-key
+    UVICORN_HOST=0.0.0.0 (for external access, for local test 127.0.0.1)
+    UVICORN_PORT=8000
+    UVICORN_RELOAD=true (for development environment)
+    ...
     ```
 
 5. Run the server:
@@ -127,3 +131,12 @@ All content is public, simulated, or self-developed for learning and demonstrati
 You can run unit tests using `pytest` to verify the core functionalities:
 ```bash
 PYTHONPATH=. pytest -v
+```
+
+## 🎞 Demo Images 
+
+- if you send formatted requests, you can see logs like below image.
+![process-log](./sample_data/process-log.png)
+
+- and then, the response data will look like this image. You can customize the reponse data with sophisticated prompt engineering.  
+![reponse-data](./sample_data/response-data.png)
