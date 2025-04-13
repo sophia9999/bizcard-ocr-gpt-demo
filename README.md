@@ -102,25 +102,28 @@ After you start "python run_server.py", you can see at http://localhost:port/doc
 
 - **Description**: Processes a business card image URL, extracts the text, and returns the classified data.
 - **Request Body**:
-  ```json
-  {
-    "user_id": "test_user",
-    "user_email": "test@example.com",
-    "image_url": "https://dummy.image.url/card.jpg"
-  }
+    ```json
+    {
+        "user_id": "test_user",
+        "user_email": "test@example.com",
+        "image_url": "https://dummy.image.url/card.jpg"
+    }
+    ```
+
 - **Response Body**:
-  ```json
-{
-    "result": [
-        {
-            "card_idx": 1,
-            "name": ["John Doe"],
-            "company": ["Example Inc."],
-            "phone_numbers": ["010-1234-5678"],
-                // Custom depending on prompt
-        }
-    ]
-}
+    ```json
+    {
+        "result": [
+            {
+                "card_idx": 1,
+                "name": ["John Doe"],
+                "company": ["Example Inc."],
+                "phone_numbers": ["010-1234-5678"],
+                    // Custom depending on prompt
+            }
+        ]
+    }
+    ```
 
 
 ## 🔐 Disclaimer
