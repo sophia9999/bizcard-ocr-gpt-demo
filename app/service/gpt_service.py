@@ -29,7 +29,7 @@ def build_messages(cards: list) -> list:
     return messages
 
 async def call_openai(messages: list) -> str:
-    logger.info("GPT 호출 시작")
+    logger.debug("GPT 호출 시작")
     start = time.monotonic()
 
     response = await client_openai.chat.completions.create(
@@ -43,7 +43,7 @@ async def call_openai(messages: list) -> str:
     )
 
     elapsed = time.monotonic() - start
-    logger.info(f"GPT 호출 완료 (소요 시간: {elapsed:.2f}초)")
+    logger.debug(f"GPT 호출 완료 (소요 시간: {elapsed:.2f}초)")
     
     return response.choices[0].message.content
 
@@ -60,8 +60,8 @@ def parse_gpt_response(content: str, expected_len: int) -> list:
         elif isinstance(parsed, dict) and expected_len == 1:
             return [parsed]
         else:
-            raise ValueError("Invalid GPT response format")
+            raise ValueError(f"Invalid GPT response format: {str(e)}")
     except json.JSONDecodeError:
-        raise ValueError("GPT 응답이 JSON이 아님")
+        raise ValueError(f"GPT 응답이 JSON이 아님: {str(e)}")
     except Exception as e:
         raise ValueError(f"GPT 응답 파싱 실패: {str(e)}")

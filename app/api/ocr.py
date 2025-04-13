@@ -25,6 +25,7 @@ class OCRRequest(BaseModel):
 async def process_ocr(payload: OCRRequest):
     #logger.debug(f"Processing OCR for user: {payload.user_id}, image: {payload.image_url}")
     try :
+        start = time.monotonic()
         logger.debug(f"추출 파이프라인 시작 시간 {time.strftime('%X')}")
         
         # 이미지 불러오기 (spec 상 url로 받은 1장의 이미지)
@@ -46,8 +47,10 @@ async def process_ocr(payload: OCRRequest):
         # 전체 OCR파이프라인 중에서, 비동기로 처리할 의미가 있는 것은 GPT호출 뿐
         result = await ocr_service.classify_cards_with_gpt(extracted_text)
 
+        elapsed = time.monotonic() - start
         logger.debug(f"추출 파이프라인 종료 시간 {time.strftime('%X')}")
-
+        logger.debug(f"추출 파이프라인 총 (소요 시간: {elapsed:.2f}초)")
+        
         return JSONResponse(content={"result": result})
 
     except Exception as e:
