@@ -33,20 +33,23 @@ def divide_image_to_cards(image: Image.Image) -> list[Image.Image]:
         doc_index = 1
         # 컨투어 추출 및 필터링 
         for cnt in contours:
-            # 너무 작은 사각형은 제외
-            area = cv2.contourArea(cnt)
-            if area < 5000:
-                    continue
+            try :
+                # 너무 작은 사각형은 제외
+                area = cv2.contourArea(cnt)
+                if area < 5000:
+                        continue
 
-            epsilon = 0.02 * cv2.arcLength(cnt, True)
-            approx = cv2.approxPolyDP(cnt, epsilon, True)
+                epsilon = 0.02 * cv2.arcLength(cnt, True)
+                approx = cv2.approxPolyDP(cnt, epsilon, True)
 
-            # 꼭지점이 4개여야 사각형 모양이라고 판단. (사각형 모양 = 문서)
-            if len(approx) == 4:
-                warped = four_point_transform(img, approx)
+                # 꼭지점이 4개여야 사각형 모양이라고 판단. (사각형 모양 = 문서)
+                if len(approx) == 4:
+                    warped = four_point_transform(img, approx)
 
-                doc_index += 1
-                extracted_docs.append(warped)
+                    doc_index += 1
+                    extracted_docs.append(warped)
+            except Exception as e :
+                logger.debug(f"사각형 문서 검출 실패 다음 시도: {e}")
 
         return extracted_docs
 
