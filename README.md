@@ -48,6 +48,7 @@ To make the structure reusable and shareable, I rebuilt the core logic using moc
  ┃ ┗ 📜test_gpt_service.py
  ┣ 📜.env.example
  ┣ 📜.gitignore
+ ┣ 📜gunicorn.conf.py
  ┣ 📜README.md
  ┣ 📜requirements.txt
  ┗ 📜run_server.py
