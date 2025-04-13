@@ -1,26 +1,25 @@
 # Bizcard OCR + GPT Demo
 
-This project is a simplified and restructured version of a business card information extraction pipeline  
-that I helped develop and maintain as part of a team project in my company.
+This project demonstrates a simplified and modularized version of a business card information extraction pipeline,  
+based on a team project I participated in during my time at work.
 
-To make the structure reusable and shareable, I rebuilt the core logic using mock data and public APIs.
+It has been rebuilt using mock data and publicly available APIs (e.g., Google Vision, OpenAI) to ensure reusability and shareability.
 
 ## 🧑‍💻 Technology Stack
 
 - **Backend Framework**: FastAPI
 - **OCR**: Google Vision API
 - **Text Classification**: OpenAI GPT (GPT-4o-mini)
-- **Database**: None (For simplicity, no database used in this demo)
+- **Database**: None (this application is a just pipeline for OCR)
 - **Testing**: pytest for unit testing
-- **CI/CD**: Planned setup for deployment automation (GitHub Actions, Docker)
 - **Environment Management**: venv for managing dependencies
 
 ## ⚙️ Features
 - Simulated image processing & OCR flow with Google Vision API
 - Prompt engineering for structured GPT responses (name, company, etc.)
 - Modular FastAPI project layout with organized services and routes
-- Logging, environment separation, and planned CI/CD setup
-- Unit tests with `pytest` for critical functions
+- Logging, environment separation
+- Unit tests with `pytest` 
 
 ## Project Structure
 ```
@@ -111,17 +110,17 @@ After you start "python run_server.py", you can see at http://localhost:port/doc
   }
 - **Response Body**:
   ```json
-    {
+{
     "result": [
         {
-        "card_idx": 1,
-        "name": ["John Doe"],
-        "company": ["Example Inc."],
-        "phone_numbers": ["010-1234-5678"],
-            // It depends on your prompt.
+            "card_idx": 1,
+            "name": ["John Doe"],
+            "company": ["Example Inc."],
+            "phone_numbers": ["010-1234-5678"],
+                // Custom depending on prompt
         }
-        ]
-    }
+    ]
+}
 
 
 ## 🔐 Disclaimer
