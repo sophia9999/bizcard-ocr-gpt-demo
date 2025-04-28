@@ -1,7 +1,7 @@
 # Bizcard OCR + GPT Demo
 
 This project demonstrates a simplified and modularized version of a business card information extraction pipeline,  
-based on a team project I participated in during my time at work.
+inspired by a team project I contributed to at work.
 
 It has been rebuilt using mock data and publicly available APIs (e.g., Google Vision, OpenAI) to ensure reusability and shareability.
 
