@@ -39,7 +39,7 @@ async def process_ocr(payload: OCRRequest):
             raise HTTPException(status_code=500, detail="카드 추출 실패")
 
         # google vision text 추출
-        extracted_text = ocr_service.call_google_vision_api(extracted_cards,)
+        extracted_text = ocr_service.call_google_vision_api(extracted_cards)
         if not extracted_text:
             raise HTTPException(status_code=500, detail="텍스트 인식 실패")
 

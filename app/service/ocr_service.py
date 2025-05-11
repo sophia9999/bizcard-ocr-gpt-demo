@@ -18,23 +18,26 @@ def call_google_vision_api(extracted_cards: list[np.ndarray]) -> list[str]:
         
         # 추출된 개수만큼의 카드별 array로 변환
         for idx, cv_image in enumerate(extracted_cards):
-            # OpenCV -> jpeg byte encoding
-            _, buffer = cv2.imencode(".jpg", cv_image)
-            content = buffer.tobytes()
+            try : 
+                # OpenCV -> jpeg byte encoding
+                _, buffer = cv2.imencode(".jpg", cv_image)
+                content = buffer.tobytes()
 
-            vision_image = vision.Image(content=content)
-            response = vision_client.text_detection(image=vision_image)
+                vision_image = vision.Image(content=content)
+                response = vision_client.text_detection(image=vision_image)
 
-            texts = response.text_annotations
-            if texts:
-                full_text = texts[0].description.strip()
-                full_text = full_text.replace("\n", " ")
-                logger.debug(f"card {idx+1} 텍스트: {full_text}")
-                result_texts.append({
-                    "detected_texts" : full_text
-                })
-            else:
-                result_texts.append("")
+                texts = response.text_annotations
+                if texts:
+                    full_text = texts[0].description.strip()
+                    full_text = full_text.replace("\n", " ")
+                    logger.debug(f"card {idx+1} 텍스트: {full_text}")
+                    result_texts.append({
+                        "detected_texts" : full_text
+                    })
+                else:
+                    result_texts.append("")
+            except Exception as e:
+                logger.debug("Vision API error 다음 사진 시도")
 
     except Exception as e:
         logger.exception("Vision API 호출 실패")
